@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Zaad System - Graduation Project
+ * Developed by: Mariam Akram & Iman Fouad
+ * Supervised by: Dr. Mohanad Al-Mashreqi
+ * University of Saba - 2025/2026
+ */
+
 namespace App\Http\Controllers;
 
 use App\Models\Order;
@@ -40,20 +47,28 @@ class OrderController extends Controller
                 'error' => 'Health Hazard Detected',
                 'message' => $e->getMessage(),
                 'ingredient' => $e->getIngredient()
-            ], 422);
+            ], 403);
         }
+
+        // Step 3: Payment Simulation
+        $paymentToken = $request->input('payment_token', 'demo_token');
+        $paymentService = new \App\Services\PaymentService();
+        
+        $isPaid = $paymentService->simulatePayment($paymentToken, $meal->price);
 
         // Create the order if safe
         $order = Order::create([
             'child_id' => $child->id,
             'meal_id' => $meal->id,
-            'status' => 'pending',
-            'qr_hash' => Str::random(32),
+            'status' => $isPaid ? 'paid' : 'pending',
+            'qr_token' => Str::upper(Str::random(10)),
+            'payment_token' => $paymentToken,
         ]);
 
         return response()->json([
-            'message' => 'Order placed successfully',
-            'order' => $order
+            'message' => $isPaid ? 'Order placed and paid successfully' : 'Order placed, awaiting payment',
+            'order' => $order,
+            'payment_status' => $isPaid ? 'success' : 'pending'
         ], 201);
     }
 }

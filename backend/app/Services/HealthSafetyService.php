@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Zaad System - Graduation Project
+ * Developed by: Mariam Akram & Iman Fouad
+ * Supervised by: Dr. Mohanad Al-Mashreqi
+ * University of Saba - 2025/2026
+ */
+
 namespace App\Services;
 
 use App\Models\Child;
@@ -31,14 +38,14 @@ class HealthSafetyService
         // Check for allergies
         foreach ($mealIngredients as $ingredient) {
             if (in_array(strtolower($ingredient), array_map('strtolower', $allergies))) {
-                throw new HealthHazardException($ingredient);
+                throw new HealthHazardException("عذراً، هذه الوجبة تحتوي على مسببات حساسية للطالب! ($ingredient)");
             }
         }
 
         // Check for forbidden ingredients
         foreach ($mealIngredients as $ingredient) {
             if (in_array(strtolower($ingredient), array_map('strtolower', $forbidden))) {
-                throw new HealthHazardException($ingredient);
+                throw new HealthHazardException("عذراً، هذه الوجبة تحتوي على مسببات حساسية للطالب! ($ingredient)");
             }
         }
     }

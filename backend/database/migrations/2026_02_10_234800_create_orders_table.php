@@ -16,7 +16,8 @@ return new class extends Migration
             $table->foreignId('child_id')->constrained('children')->onDelete('cascade');
             $table->foreignId('meal_id')->constrained('meals')->onDelete('cascade');
             $table->string('status')->default('pending');
-            $table->string('qr_hash')->unique();
+            $table->string('qr_token')->unique()->nullable();
+            $table->string('payment_token')->nullable();
             $table->timestamps();
         });
     }
